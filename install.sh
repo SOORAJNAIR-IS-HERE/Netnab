@@ -38,6 +38,7 @@ chmod +x netnab.py
 # Copy the script to /usr/local/bin (to make it accessible globally)
 echo "Installing NetNab to /usr/local/bin..."
 sudo cp netnab.py /usr/local/bin/netnab
+chmod +x /usr/local/bin/netnab  # Ensure executable permission
 
 # Provide feedback to the user
 echo "NetNab has been successfully installed!"
