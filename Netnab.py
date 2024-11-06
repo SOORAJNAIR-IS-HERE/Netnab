@@ -65,7 +65,7 @@ known_services = {
     42: "nameserver",
     43: "whois",
     49: "tacacs",
-    53: "domain",
+    53: "DNS",
     67: "bootps",
     68: "bootpc",
     69: "tftp",
@@ -153,6 +153,8 @@ known_services = {
     2095: "webmail (default)",
     2096: "webmail (secure)",
     2222: "directadmin",
+    3268: "globalcatLDAP",
+    3269: "globalcatLDAPssl",
     3306: "mysql",
     3389: "ms-wbt-server",
     3690: "svn",
@@ -160,6 +162,7 @@ known_services = {
     4662: "edonkey",
     5432: "postgresql",
     5500: "VNC (default)",
+    5510: "filtered secureidprop",
     5631: "pcanywhere",
     5900: "vnc",
     6379: "redis",
@@ -178,6 +181,37 @@ known_services = {
     6888: "bittorrent",
     6889: "bittorrent",
     8080: "http-proxy - HTTP Proxy",
+    47624: "directplaysrvr",
+    47624: "directplaysrvr",
+    47806: "ap",
+    47806: "ap",
+    47808: "bacnet",
+    47808: "bacnet",
+    47809: "presonus-ucnet",
+    48000: "nimcontroller",
+    48001: "nimspooler",
+    48002: "nimhub",
+    48003: "nimgtw",
+    48004: "nimbusdb",
+    48005: "nimbusdbctrl",
+    48048: "juka",
+    48049: "3gpp-cbsp",
+    48050: "weandsf",
+    48128: "isnetserv",
+    48129: "blp5",
+    48556: "com-bardac-dw",
+    48619: "iqobject",
+    48653: "tcp robotraconteur",
+    48899: "tc_ads_discovery",
+    49000: "matahari",
+    49001: "nusrp",
+    49150: "tcp inspider",
+    49400: "tcp compaqdiag",
+    61439: "netprowler-manager",
+    61440: "netprowler-manager2",
+    61441: "netprowler-sensor",
+    62078: "iphone_sync",
+    65301: "pcanywhere",
 }
 
 thread_lock = threading.Lock()
@@ -290,11 +324,13 @@ def is_host_up(ip):
     return response == 0
 
 # Main function to scan ports
-def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp", service_version=False, output_format="json"):
-    print_banner()
+def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp", service_version=False, output_format="json", show_banner=True):
+    if show_banner:
+        print_banner()
+    
     print(f"{WHITE}Starting Netnab 1.0.0SVN at {datetime.now().strftime('%Y-%m-%d %H:%M %Z')}")
     logging.info(f"Starting scan on {ip} on ports {start_port}-{end_port} with {num_threads} threads.")
-    time.sleep(0.60)
+    time.sleep(1.00)
     print(f"{WHITE}Target: {BOLD}{WHITE}{ip}{RESET}")
     time.sleep(0.30)
     print(f"{WHITE}Protocol: {BOLD}{WHITE}TCP | UDP{RESET}")
@@ -348,11 +384,12 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
         # Implement XML export here
         pass
 
+
 def main():
     parser = argparse.ArgumentParser(description="Netnab - Fast and efficient port scanner.")
     
-    # Positional argument for the IP address
-    parser.add_argument("ip", help="IP address to scan")
+    # Change to accept multiple IP addresses
+    parser.add_argument("ip", nargs='+', help="List of IP addresses to scan")
 
     parser.add_argument("-p", "--ports", type=str, default="1-1000", help="Port range to scan (default: 1-1000)")
     parser.add_argument("-t", "--threads", type=int, default=5, help="Number of threads (1-100, default: 5)")
@@ -373,18 +410,21 @@ def main():
     if start_port > end_port:
         print(f"{RED}Error: Start port {start_port} must be less than or equal to end port {end_port}.{RESET}")
         return
-    
-    # Parse port range
-    start_port, end_port = map(int, args.ports.split('-'))
-    ip = args.ip
+
+    # Store the list of IPs directly from args
+    ip_list = args.ip
     num_threads = args.threads
     timeout = args.timeout
     protocol = args.protocol
     service_version = args.service_version
     output_format = args.output_format
 
-    # Start scanning
-    scan_ports(ip, start_port, end_port, num_threads, timeout, protocol, service_version, output_format)
+    # Start scanning for each IP
+    for index, ip in enumerate(ip_list):
+        ip = ip.strip()  # Clean up any whitespace
+        show_banner = (index == 0)  # Show banner only for the first IP
+        print(f"\nStarting scan for {ip}")
+        scan_ports(ip, start_port, end_port, num_threads, timeout, protocol, service_version, output_format, show_banner=show_banner)
 
 if __name__ == "__main__":
     main()
