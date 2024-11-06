@@ -7,16 +7,16 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Define the source and destination
-SOURCE="netnab.py"
+SOURCE="Netnab.py"  # Adjusted to match your actual filename
 DEST="/usr/local/bin/netnab"
 
-# Check if netnab.py exists
+# Check if Netnab.py exists
 if [ ! -f "$SOURCE" ]; then
     echo "Error: $SOURCE not found. Make sure you're running this script from the correct directory."
     exit 1
 fi
 
-# Copy netnab.py to /usr/local/bin as 'netnab'
+# Copy Netnab.py to /usr/local/bin as 'netnab'
 echo "Copying $SOURCE to $DEST..."
 cp "$SOURCE" "$DEST"
 
@@ -24,3 +24,4 @@ cp "$SOURCE" "$DEST"
 chmod +x "$DEST"
 
 echo "Installation complete! You can now use the tool globally with: netnab <ip>"
+
