@@ -23,14 +23,10 @@ if ! command_exists pip; then
     exit 1
 fi
 
-# Clone the repository
-echo "Cloning the repository..."
-git clone https://github.com/SOORAJNAIR-IS-HERE/Netnab.git
-
-# Check if the repository was cloned successfully
+# Check if the repository already exists
 if [ ! -d "NetNab" ]; then
-    echo "Failed to clone the repository. Exiting."
-    exit 1
+    echo "Cloning the repository..."
+    git clone https://github.com/username/NetNab.git
 fi
 
 # Change into the cloned directory
