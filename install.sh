@@ -26,7 +26,7 @@ fi
 # Check if the repository already exists
 if [ ! -d "NetNab" ]; then
     echo "Cloning the repository..."
-    git clone https://github.com/username/NetNab.git
+    git clone https://github.com/SOORAJNAIR-IS-HERE/Netnab.git
 fi
 
 # Change into the cloned directory
