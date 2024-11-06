@@ -1,49 +1,26 @@
 #!/bin/bash
 
-# Function to check if a command exists
-command_exists() {
-    command -v "$1" &>/dev/null
-}
-
-# Check if Python 3 is installed
-if ! command_exists python3; then
-    echo "Python3 is not installed. Please install Python3 first."
+# Ensure the script is run with sudo/root permissions
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run this script as root or use sudo."
     exit 1
 fi
 
-# Check if git is installed
-if ! command_exists git; then
-    echo "Git is not installed. Please install Git first."
+# Define the source and destination
+SOURCE="netnab.py"
+DEST="/usr/local/bin/netnab"
+
+# Check if netnab.py exists
+if [ ! -f "$SOURCE" ]; then
+    echo "Error: $SOURCE not found. Make sure you're running this script from the correct directory."
     exit 1
 fi
 
-# Check if pip (Python package manager) is installed
-if ! command_exists pip; then
-    echo "pip is not installed. Please install pip first."
-    exit 1
-fi
+# Copy netnab.py to /usr/local/bin as 'netnab'
+echo "Copying $SOURCE to $DEST..."
+cp "$SOURCE" "$DEST"
 
-# Check if the repository already exists
-if [ ! -d "NetNab" ]; then
-    echo "Cloning the repository..."
-    git clone https://github.com/SOORAJNAIR-IS-HERE/Netnab.git
-fi
+# Make it executable
+chmod +x "$DEST"
 
-# Change into the cloned directory
-cd NetNab || { echo "Failed to enter the NetNab directory."; exit 1; }
-
-# Install dependencies
-echo "Installing dependencies from requirements.txt..."
-pip install -r requirements.txt
-
-# Make netnab.py executable
-chmod +x netnab.py
-
-# Copy the script to /usr/local/bin (to make it accessible globally)
-echo "Installing NetNab to /usr/local/bin..."
-sudo cp netnab.py /usr/local/bin/netnab
-chmod +x /usr/local/bin/netnab  # Ensure executable permission
-
-# Provide feedback to the user
-echo "NetNab has been successfully installed!"
-echo "You can now run it globally with: netnab <ip>"
+echo "Installation complete! You can now use the tool globally with: netnab <ip>"
