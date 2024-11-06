@@ -26,6 +26,14 @@ fi
 # Clone the repository
 echo "Cloning the repository..."
 git clone https://github.com/SOORAJNAIR-IS-HERE/Netnab.git
+
+# Check if the repository was cloned successfully
+if [ ! -d "NetNab" ]; then
+    echo "Failed to clone the repository. Exiting."
+    exit 1
+fi
+
+# Change into the cloned directory
 cd NetNab || { echo "Failed to enter the NetNab directory."; exit 1; }
 
 # Install dependencies
