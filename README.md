@@ -72,7 +72,7 @@ sudo mv netnab /usr/local/bin
 netnab <IP>
 ```
 
-**To scan a Multiple URL**
+**To scan Multiple Targets**
 
 ```python
 netnab <Target> <Target>
@@ -84,10 +84,9 @@ netnab <Target> <Target>
 
 -o  | output format
 
--p  | Port range
+-p  | Port range [1-1024]
 
--t  | Threads (1-100)
-
+-t  | Threads [1-100]
 ```
 
 ## Install the Required Dependencies
