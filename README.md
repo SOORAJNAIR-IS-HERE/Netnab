@@ -68,7 +68,8 @@ Move to bin Directory
 
 ```python
 sudo mv netnab /usr/local/bin
-
+```
+```python
 netnab <IP>
 ```
 
