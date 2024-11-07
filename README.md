@@ -42,3 +42,67 @@ Netnab is a powerful network scanning tool designed to streamline network analys
 
 **8. Future-Proof**
 - Designed with extensibility in mind, making it easier to add new protocols, scan types, and features.
+
+## Installation on Linux
+
+To run Netnab, you can either use this tool with Python/Python3 installed or just move the python file to bin directory. You can clone the repository and install the required dependencies.
+
+**Clone the Repository:**
+
+```python
+git clone https://github.com/SOORAJNAIR-IS-HERE/Headex.git
+```
+**Navigate to the Project Directory**
+
+```python
+cd Netnab
+```
+# Usage
+
+```python
+python netnab <IP>
+```
+## Running globally in Linux
+
+Move to bin Directory
+
+```python
+sudo mv netnab /usr/local/bin
+
+netnab <IP>
+```
+
+**To scan a Multiple URL**
+
+```python
+netnab <Target> <Target>
+```
+## Flags
+
+```html
+-sv | service version
+
+-o  | output format
+
+-p  | Port range
+
+-t  | Threads (1-100)
+
+```
+
+## Install the Required Dependencies
+
+**Update the package list**
+```python
+sudo apt update
+```
+**Install Python 3**
+```python
+sudo apt install python3
+```
+**Verify the installation**
+```python
+python3 --version
+```
+
+
