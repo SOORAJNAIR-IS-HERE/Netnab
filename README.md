@@ -43,7 +43,7 @@ Netnab is a powerful network scanning tool designed to streamline network analys
 **8. Future-Proof**
 - Designed with extensibility in mind, making it easier to add new protocols, scan types, and features.
 
-## Installation on Linux
+# Installation on Linux
 
 To run Netnab, you can either use this tool with Python/Python3 installed or just move the python file to bin directory. You can clone the repository and install the required dependencies.
 
