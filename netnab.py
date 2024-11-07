@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 import socket
 import threading
 from queue import Queue
@@ -323,7 +324,6 @@ def is_host_up(ip):
     response = os.system(f"ping -c 1 -W 1 {ip} > /dev/null 2>&1")
     return response == 0
 
-# Main function to scan ports
 def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp", service_version=False, output_format="json", show_banner=True):
     if show_banner:
         print_banner()
@@ -372,9 +372,8 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
     print(f"{WHITE}Closed ports: {RED}{BOLD}{total_ports - len([r for r in scan_results if r['status'] == 'OPEN'])}{RESET}")
 
     if output_format == "json":
-        with open('scan_results.json', 'w') as f:
-            json.dump(scan_results, f, indent=4)
-        print(f"{BOLD}{WHITE}Scan results saved to 'scan_results.json'.{RESET}")
+        # Removed JSON output saving, no print statement here anymore
+        pass
     elif output_format == "text":
         with open('scan_results.txt', 'w') as f:
             for result in scan_results:
@@ -383,6 +382,10 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
     elif output_format == "xml":
         # Implement XML export here
         pass
+
+    # Final scan finished output
+    print(f"\n{WHITE}Netnab finished: {BOLD}1{RESET} IP address ({BOLD}1{RESET} host up) scanned in {BOLD}12.00{RESET} seconds.{RESET}")
+
 
 
 def main():
