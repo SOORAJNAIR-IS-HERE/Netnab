@@ -77,6 +77,8 @@ netnab <Target> <Target>
 ## Flags
 
 ```html
+-h  | help message
+
 -sv | service version
 
 -o  | output format
