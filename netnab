@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
+
 import socket
 import threading
 from queue import Queue
 from datetime import datetime
 import argparse
 import os
-import json
 import pyfiglet
 import time
 from colorama import Fore, Style, init
@@ -47,11 +47,12 @@ known_services = {
     1: "tcpmux",
     2: "compressnet - Management Utility",
     3: "compressnet - Compression Process",
-    5: "rje - Remote Job Entry",
+    5: "rje",
     7: "echo -",
     9: "discard",
     11: "systat",
     13: "daytime",
+    15: "netstat",
     17: "qotd",
     18: "msp",
     19: "chargen",
@@ -59,20 +60,75 @@ known_services = {
     21: "ftp",
     22: "ssh",
     23: "telnet",
+    24: "priv-mail",
     25: "smtp",
+    26: "rsftp",
+    27: "nsw-fe",
+    29: "msg-icp",
+    31: "msg-auth",
+    33: "dsp",
+    35: "priv-print",
     37: "time",
+    38: "rap",
     39: "rlp",
+    41: "graphics",
     42: "nameserver",
     43: "whois",
+    44: "mpm-flags",
+    45: "mpm",
+    46: "mpm-snd",
+    47: "ni-ftp",
+    48: "auditd",
     49: "tacacs",
-    53: "DNS",
-    67: "bootps",
-    68: "bootpc",
+    50: "re-mail-ck",
+    51: "la-maint",
+    52: "xns-time",
+    53: "domain",
+    54: "xns-ch",
+    55: "isi-gl",
+    56: "xns-auth",
+    57: "priv-term",
+    58: "xns-mail",
+    59: "priv-file",
+    61: "ni-mail",
+    62: "acas",
+    63: "via-ftp",
+    64: "covia",
+    65: "tacacs-ds",
+    66: "sqlnet",
+    67: "dhcps",
+    68: "dhcpc",
     69: "tftp",
     70: "gopher",
+    71: "netrjs-1",
+    72: "netrjs-2",
+    73: "netrjs-3",
+    74: "netrjs-4",
+    75: "priv-dial",
+    76: "deos",
+    77: "priv-rje",
+    78: "vettcp",
     79: "finger",
     80: "http",
-    88: "kerberos",
+    81: "hosts2-ns",
+    82: "xfer",
+    83: "mit-ml-dev",
+    84: "ctf",
+    85: "mit-ml-dev",
+    86: "mfcobol",
+    87: "priv-term-l",
+    88: "kerberos-sec",
+    89: "su-mit-tg",
+    90: "dnsix",
+    91: "mit-dov",
+    92: "npp",
+    93: "dcp",
+    94: "objcall",
+    95: "supdup",
+    96: "dixie",
+    97: "swift-rvf",
+    98: "linuxconf",
+    98: "tacnews",
     101: "hostname - NIC",
     102: "iso-tsap",
     107: "rtelnet",
@@ -180,7 +236,35 @@ known_services = {
     6887: "bittorrent",
     6888: "bittorrent",
     6889: "bittorrent",
+    7000: "afs3-fileserver",
+    7001: "afs3-callback",
+    7002: "afs3-prserver",
+    7003: "afs3-vlserver",
+    7004: "afs3-kaserver",
+    7005: "afs3-volser",
+    7006: "afs3-errors",
+    7007: "afs3-bos",
+    7008: "afs3-update",
+    7009: "afs3-rmtsys",
     8080: "http-proxy - HTTP Proxy",
+    44818: "EtherNetIP-2",
+    44900: "m3da",
+    45000: "asmp",
+    45000: "ciscopop",
+    45001: "asmps",
+    45002: "rs-status",
+    45045: "synctest",
+    45045: "synctest",
+    45054: "invision-ag",
+    45514: "cloudcheck",
+    45678: "eba",
+    45824: "dai-shell",
+    45825: "qdb2service",
+    45966: "ssr-servermgr",
+    46336: "inedo",
+    46998: "spremotetablet",
+    46999: "mediabox",
+    47100: "jvl-mactalk",
     47624: "directplaysrvr",
     47624: "directplaysrvr",
     47806: "ap",
@@ -312,7 +396,6 @@ def scan_port(ip, port, timeout, protocol, service_version=False):
             })
 
 # Thread worker function
-# Thread worker function
 def worker(ip, timeout, protocol, service_version, total_ports):
     while not port_queue.empty():
         port = port_queue.get()
@@ -323,10 +406,16 @@ def is_host_up(ip):
     response = os.system(f"ping -c 1 -W 1 {ip} > /dev/null 2>&1")
     return response == 0
 
+import time
+from datetime import datetime
+
 def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp", service_version=False, output_format="json", show_banner=True):
     if show_banner:
         print_banner()
-    
+
+    # Record the start time of the scan
+    start_time = time.time()
+
     print(f"{WHITE}Starting Netnab 1.0.0SVN at {datetime.now().strftime('%Y-%m-%d %H:%M %Z')}")
     logging.info(f"Starting scan on {ip} on ports {start_port}-{end_port} with {num_threads} threads.")
     time.sleep(1.00)
@@ -358,17 +447,20 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
     for thread in threads:
         thread.join()
 
-    # Output scan results
+    # Record the end time of the scan
+    end_time = time.time()
+    elapsed_time = round(end_time - start_time, 2)  # Time taken for the scan, rounded to 2 decimal places
+
+    # Output scan results (removing scanned ports and closed ports)
     tcp_results = [result for result in scan_results if result["protocol"] == "tcp"]
     udp_results = [result for result in scan_results if result["protocol"] == "udp"]
-    
+
     print()
 
+    # Only show open TCP and UDP ports
     print(f"{BOLD}{WHITE}Scan completed.{RESET}")
-    print(f"{WHITE}Total scanned ports: {BOLD}{total_ports}{RESET}")
     print(f"{WHITE}Open TCP ports: {GREEN}{BOLD}{len([r for r in tcp_results if r['status'] == 'OPEN'])}{RESET}")
     print(f"{WHITE}Open UDP ports: {GREEN}{BOLD}{len([r for r in udp_results if r['status'] == 'OPEN'])}{RESET}")
-    print(f"{WHITE}Closed ports: {RED}{BOLD}{total_ports - len([r for r in scan_results if r['status'] == 'OPEN'])}{RESET}")
 
     if output_format == "json":
         # Removed JSON output saving, no print statement here anymore
@@ -376,14 +468,15 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
     elif output_format == "text":
         with open('scan_results.txt', 'w') as f:
             for result in scan_results:
-                f.write(f"{result}\n")
+                if result["status"] == "OPEN":  # Only save open ports
+                    f.write(f"{result}\n")
         print(f"{BOLD}{WHITE}Scan results saved to 'scan_results.txt'.{RESET}")
     elif output_format == "xml":
         # Implement XML export here
         pass
 
-    # Final scan finished output
-    print(f"\n{WHITE}Netnab finished: {BOLD}1{RESET} IP address ({BOLD}1{RESET} host up) scanned in {BOLD}12.00{RESET} seconds.{RESET}")
+    # Final scan finished output with actual elapsed time
+    print(f"\n{WHITE}Netnab finished: {BOLD}1{RESET} IP address ({BOLD}1{RESET} host up) scanned in {BOLD}{elapsed_time} seconds.{RESET}")
 
 
 
