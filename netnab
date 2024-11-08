@@ -13,17 +13,17 @@ from colorama import Fore, Style, init
 import logging
 import struct
 
-# Initialize colorama and logging
+
 init(autoreset=True)
 logging.basicConfig(filename='netnab.log', level=logging.INFO, format='%(asctime)s %(levelname)s:%(message)s')
 
-# ThreadLock to print from threads safely
+
 thread_lock = threading.Lock()
 
-# Queue for storing port numbers to be scanned
+
 port_queue = Queue()
 
-# ANSI escape codes for formatting
+
 BOLD = "\033[1m"
 RESET = "\033[0m"
 GREEN = "\033[92m"
@@ -32,7 +32,7 @@ YELLOW = "\033[93m"
 CYAN = "\033[96m"
 WHITE = "\033[97m"
 
-# List to hold scan results
+
 scan_results = []
 
 def print_banner():
@@ -307,21 +307,21 @@ def grab_banner(ip, port):
 
     try:
         with socket.create_connection((ip, port), timeout=2) as sock:
-            # Specific request based on known service
-            if port == 80 or port == 443:  # HTTP/HTTPS
+            
+            if port == 80 or port == 443:  
                 sock.sendall(b"HEAD / HTTP/1.1\r\nHost: {}\r\nConnection: close\r\n\r\n".format(ip).encode())
                 banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
-            elif port == 135:  # EPMAP (this is an example; RPC requires specific handling)
-                # Custom RPC request would go here
-                sock.sendall(b"YOUR_RPC_REQUEST_HERE")  # Placeholder
+            elif port == 135:
+                
+                sock.sendall(b"YOUR_RPC_REQUEST_HERE")
                 banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
-            elif port == 139:  # netbios-ssn
-                # Simple connection attempt (might need more for SMB)
-                sock.sendall(b"\x00\x00\x00\x00")  # Placeholder for a SMB request
+            elif port == 139:
+                
+                sock.sendall(b"\x00\x00\x00\x00")
                 banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
             else:
-                # Generic connection for other services
-                sock.sendall(b"HELLO")  # Placeholder for a generic request
+            
+                sock.sendall(b"HELLO")
                 banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
 
             if not banner:
@@ -333,7 +333,7 @@ def grab_banner(ip, port):
 
     return banner
 
-# Function to scan a port
+
 def scan_port(ip, port, timeout, protocol, service_version=False):
     try:
         if protocol == "tcp":
@@ -359,19 +359,19 @@ def scan_port(ip, port, timeout, protocol, service_version=False):
         service = known_services.get(port, "Unknown")
         banner = None
 
-        # Attempt to grab the banner if service_version is enabled
+        
         if service_version:
             try:
                 with socket.create_connection((ip, port), timeout) as sock:
                     if service in ["http", "https"]:
                        sock.sendall(b"HEAD / HTTP/1.1\r\nHost: {}\r\n\r\n".format(ip).encode())
                     else:
-                        sock.sendall(b"\r\n")  # Send a generic request to other services
+                        sock.sendall(b"\r\n") 
                     banner = sock.recv(1024).decode('utf-8', errors='ignore').strip()
             except Exception as e:
                 banner = f"Error retrieving banner: {str(e)}"
 
-        # Only acquire the lock when updating shared resources
+        
         with thread_lock:
             print(f"[+] {WHITE}Port {BOLD}{port}{RESET} {protocol.upper()} OPEN ({GREEN}{service}{RESET})")
             if banner:
@@ -395,13 +395,13 @@ def scan_port(ip, port, timeout, protocol, service_version=False):
                 "status": "CLOSED"
             })
 
-# Thread worker function
+
 def worker(ip, timeout, protocol, service_version, total_ports):
     while not port_queue.empty():
         port = port_queue.get()
         scan_port(ip, port, timeout, protocol, service_version) 
 
-# Host Discovery via Ping
+
 def is_host_up(ip):
     response = os.system(f"ping -c 1 -W 1 {ip} > /dev/null 2>&1")
     return response == 0
@@ -413,7 +413,7 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
     if show_banner:
         print_banner()
 
-    # Record the start time of the scan
+    
     start_time = time.time()
 
     print(f"{WHITE}Starting Netnab 1.0.0SVN at {datetime.now().strftime('%Y-%m-%d %H:%M %Z')}")
@@ -431,51 +431,51 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
         print(f"{RED}Host {ip} is down or unresponsive.{RESET}")
         return
 
-    # Populate the port queue
+    
     total_ports = end_port - start_port + 1
     for port in range(start_port, end_port + 1):
         port_queue.put(port)
 
-    # Create and start threads
+    
     threads = []
     for _ in range(num_threads):
         thread = threading.Thread(target=worker, args=(ip, timeout, protocol, service_version, total_ports))
         threads.append(thread)
         thread.start()
 
-    # Wait for all threads to complete
+    
     for thread in threads:
         thread.join()
 
-    # Record the end time of the scan
+   
     end_time = time.time()
-    elapsed_time = round(end_time - start_time, 2)  # Time taken for the scan, rounded to 2 decimal places
+    elapsed_time = round(end_time - start_time, 2)
 
-    # Output scan results (removing scanned ports and closed ports)
+   
     tcp_results = [result for result in scan_results if result["protocol"] == "tcp"]
     udp_results = [result for result in scan_results if result["protocol"] == "udp"]
 
     print()
 
-    # Only show open TCP and UDP ports
+   
     print(f"{BOLD}{WHITE}Scan completed.{RESET}")
     print(f"{WHITE}Open TCP ports: {GREEN}{BOLD}{len([r for r in tcp_results if r['status'] == 'OPEN'])}{RESET}")
     print(f"{WHITE}Open UDP ports: {GREEN}{BOLD}{len([r for r in udp_results if r['status'] == 'OPEN'])}{RESET}")
 
     if output_format == "json":
-        # Removed JSON output saving, no print statement here anymore
+        
         pass
     elif output_format == "text":
         with open('scan_results.txt', 'w') as f:
             for result in scan_results:
-                if result["status"] == "OPEN":  # Only save open ports
+                if result["status"] == "OPEN":
                     f.write(f"{result}\n")
         print(f"{BOLD}{WHITE}Scan results saved to 'scan_results.txt'.{RESET}")
     elif output_format == "xml":
-        # Implement XML export here
+    
         pass
 
-    # Final scan finished output with actual elapsed time
+   
     print(f"\n{WHITE}Netnab finished: {BOLD}1{RESET} IP address ({BOLD}1{RESET} host up) scanned in {BOLD}{elapsed_time} seconds.{RESET}")
 
 
@@ -483,7 +483,7 @@ def scan_ports(ip, start_port, end_port, num_threads=5, timeout=1, protocol="tcp
 def main():
     parser = argparse.ArgumentParser(description="Netnab - Fast and efficient port scanner.")
     
-    # Change to accept multiple IP addresses
+    
     parser.add_argument("ip", nargs='+', help="List of IP addresses to scan")
 
     parser.add_argument("-p", "--ports", type=str, default="1-1000", help="Port range to scan (default: 1-1000)")
@@ -497,7 +497,7 @@ def main():
 
     start_port, end_port = map(int, args.ports.split('-'))
 
-    # Validate port range
+    
     if start_port < 1 or start_port > 65535 or end_port < 1 or end_port > 65535:
         print(f"{RED}Error: Port numbers must be between 1 and 65535.{RESET}")
         return
@@ -506,7 +506,7 @@ def main():
         print(f"{RED}Error: Start port {start_port} must be less than or equal to end port {end_port}.{RESET}")
         return
 
-    # Store the list of IPs directly from args
+    
     ip_list = args.ip
     num_threads = args.threads
     timeout = args.timeout
@@ -514,10 +514,10 @@ def main():
     service_version = args.service_version
     output_format = args.output_format
 
-    # Start scanning for each IP
+
     for index, ip in enumerate(ip_list):
-        ip = ip.strip()  # Clean up any whitespace
-        show_banner = (index == 0)  # Show banner only for the first IP
+        ip = ip.strip()
+        show_banner = (index == 0)
         print(f"\nStarting scan for {ip}")
         scan_ports(ip, start_port, end_port, num_threads, timeout, protocol, service_version, output_format, show_banner=show_banner)
 
