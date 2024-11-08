@@ -109,7 +109,7 @@ python3 --version
 # output
 
 <p align="center">
-  <img src="./netnab.png" alt="Headex Logo" width="650"/>
+  <img src="./Output.png" alt="Output" width="750"/>
 </p>
 
 
