@@ -33,7 +33,3 @@ Community leaders are responsible for enforcing this code and will take fair, ap
 ## Scope
 
 This Code of Conduct applies within all community spaces, including direct interactions and publicly representing the project.
-
-## Reporting Issues
-
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders at [YOUR CONTACT EMAIL]. All complaints will be reviewed and investigated promptly and fairly.
