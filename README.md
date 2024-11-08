@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./netnab.png" alt="Headex Logo" width="650"/>
+  <img src="./netnab.png" alt="Netnab Logo" width="650"/>
 </p>
 
 <p align="center">
@@ -106,5 +106,10 @@ sudo apt install python3
 ```python
 python3 --version
 ```
+# output
+
+<p align="center">
+  <img src="./netnab.png" alt="Headex Logo" width="650"/>
+</p>
 
 
