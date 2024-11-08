@@ -81,7 +81,11 @@ netnab <Target> <Target>
 
 -o  | output format
 
--p  | Port range [1-1024]
+-p  | Port range
+
+-P  | customisable scan {tcp/udp}
+
+-T  | Timeout
 
 -t  | Threads [1-100]
 ```
