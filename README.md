@@ -56,7 +56,7 @@ cd Netnab
 # Usage
 
 ```python
-python netnab <IP>
+python netnab <Target>
 ```
 ## Running globally in Linux
 
@@ -66,7 +66,7 @@ Move to bin Directory
 sudo mv netnab /usr/local/bin
 ```
 ```python
-netnab <IP>
+netnab <Target>
 ```
 
 **To scan Multiple Targets**
