@@ -45,7 +45,7 @@ To run Netnab, you can either use this tool with Python/Python3 installed or jus
 
 **Clone the Repository:**
 
-```python
+```html
 git clone https://github.com/SOORAJNAIR-IS-HERE/Headex.git
 ```
 **Navigate to the Project Directory**
