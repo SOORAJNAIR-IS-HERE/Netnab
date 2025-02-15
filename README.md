@@ -17,6 +17,10 @@
  
 Netnab is a powerful port scanning tool designed to streamline network analysis and security assessment. It provides in-depth scans to detect active devices, open ports, and network services. Ideal for IT professionals and security analysts, NetNab helps ensure secure, optimized networks with fast, reliable results.
 
+<h1 align="center"><b>Disclaimer</b></h1>
+
+Do not increase the thread count beyond `` -t 5  `` when scanning real websites, as it may cause harm. Increasing the thread count beyond 5 is strictly prohibited for real-world use. Higher thread counts (e.g.,`` -t 100 ``) should only be used in controlled lab environments such as <b>Hack The Box</b>
+
 ## Features
 **1. Comprehensive Port Scanning**
 - Supports both TCP and UDP protocols for a thorough network assessment.
